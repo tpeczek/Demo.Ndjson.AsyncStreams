@@ -14,6 +14,7 @@ namespace Demo.AspNetCore.Mvc.FetchStreaming
         {
             services.AddControllers()
                 .AddNdjsonStreamResult()
+                //.AddNewtonsoftNdjsonStreamResult()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 

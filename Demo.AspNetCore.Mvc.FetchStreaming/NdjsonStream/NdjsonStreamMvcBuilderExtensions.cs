@@ -11,5 +11,12 @@ namespace Demo.AspNetCore.Mvc.FetchStreaming.NdjsonStream
 
             return builder;
         }
+
+        public static IMvcBuilder AddNewtonsoftNdjsonStreamResult(this IMvcBuilder builder)
+        {
+            builder.Services.TryAddSingleton<INdjsonWriterFactory, NewtonsoftNdjsonWriterFactory>();
+
+            return builder;
+        }
     }
 }
