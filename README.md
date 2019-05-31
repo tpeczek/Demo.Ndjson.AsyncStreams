@@ -1,6 +1,8 @@
 # Demo.AspNetCore.Mvc.FetchStreaming
 
-Sample project for demonstrating how to use Fetch API, Streams API, and NDJSON to improve user experience by streaming JSON objects from server to client in ASP.NET Core MVC
+Sample project for demonstrating how to use Fetch API, Streams API, and NDJSON to improve user experience by streaming JSON objects from server to client in ASP.NET Core MVC. You can read more here:
+
+- [Fetch API, Streams API, NDJSON, and ASP.NET Core MVC](https://www.tpeczek.com/2019/04/fetch-api-streams-api-ndjson-and-aspnet.html)
 
 ## Donating
 
