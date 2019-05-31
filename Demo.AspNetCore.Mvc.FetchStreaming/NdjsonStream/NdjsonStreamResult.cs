@@ -8,11 +8,9 @@ namespace Demo.AspNetCore.Mvc.FetchStreaming.NdjsonStream
 {
     public class NdjsonStreamResult : ActionResult, IStatusCodeActionResult
     {
-        private INdjsonTextWriter _ndjsonTextWriter;
+        private INdjsonWriter _ndjsonTextWriter;
         private readonly TaskCompletionSource<bool> _readyTaskCompletionSource = new TaskCompletionSource<bool>();
         private readonly TaskCompletionSource<bool> _completeTaskCompletionSource = new TaskCompletionSource<bool>();
-
-        public string ContentType { get; set; }
 
         public int? StatusCode { get; set; }
 
@@ -23,7 +21,7 @@ namespace Demo.AspNetCore.Mvc.FetchStreaming.NdjsonStream
                 throw new ArgumentNullException(nameof(context));
             }
 
-            INdjsonTextWriterFactory ndjsonTextWriterFactory = context.HttpContext.RequestServices.GetRequiredService<INdjsonTextWriterFactory>();
+            INdjsonWriterFactory ndjsonTextWriterFactory = context.HttpContext.RequestServices.GetRequiredService<INdjsonWriterFactory>();
             using (_ndjsonTextWriter = ndjsonTextWriterFactory.CreateWriter(context, this))
             {
                 _readyTaskCompletionSource.SetResult(true);

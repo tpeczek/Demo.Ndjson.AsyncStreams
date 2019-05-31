@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Demo.AspNetCore.Mvc.FetchStreaming.NdjsonStream
 {
-    internal interface INdjsonTextWriter : IDisposable
+    internal interface INdjsonWriter : IDisposable
     {
         Task WriteAsync(object value);
     }
