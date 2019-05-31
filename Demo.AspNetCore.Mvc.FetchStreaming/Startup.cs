@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Demo.AspNetCore.Mvc.FetchStreaming.NdjsonStream;
 
@@ -11,12 +12,12 @@ namespace Demo.AspNetCore.Mvc.FetchStreaming
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc()
+            services.AddControllers()
                 .AddNdjsonStreamResult()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -29,7 +30,11 @@ namespace Demo.AspNetCore.Mvc.FetchStreaming
 
             app.UseDefaultFiles(defaultFilesOptions)
                 .UseStaticFiles()
-                .UseMvc()
+                .UseRouting()
+                .UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+                })
                 .Run(async (context) =>
                 {
                     await context.Response.WriteAsync("-- Demo.AspNetCore.Mvc.FetchStreaming --");

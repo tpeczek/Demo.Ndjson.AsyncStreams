@@ -7,7 +7,7 @@ namespace Demo.AspNetCore.Mvc.FetchStreaming.NdjsonStream
     {
         public static IMvcBuilder AddNdjsonStreamResult(this IMvcBuilder builder)
         {
-            builder.Services.TryAddSingleton<INdjsonTextWriterFactory, NdjsonTextWriterFactory>();
+            //builder.Services.TryAddSingleton<INdjsonTextWriterFactory, NdjsonTextWriterFactory>();
 
             return builder;
         }
