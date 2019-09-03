@@ -1,13 +1,15 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Text.Json;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using Microsoft.Extensions.Options;
+using Demo.AspNetCore.Mvc.FetchStreaming.NdjsonStream.Infrastructure;
 
 namespace Demo.AspNetCore.Mvc.FetchStreaming.NdjsonStream
 {
@@ -20,17 +22,22 @@ namespace Demo.AspNetCore.Mvc.FetchStreaming.NdjsonStream
             private readonly Stream _writeStream;
             private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-            public NdjsonWriter(Stream writeStream, JsonSerializerOptions jsonSerializerOptions)
+            public NdjsonWriter(Stream writeStream, JsonOptions jsonOptions)
             {
                 _writeStream = writeStream;
-                _jsonSerializerOptions = jsonSerializerOptions;
+
+                _jsonSerializerOptions = jsonOptions.JsonSerializerOptions;
+                if (_jsonSerializerOptions.Encoder is null)
+                {
+                    _jsonSerializerOptions = _jsonSerializerOptions.Copy(JavaScriptEncoder.UnsafeRelaxedJsonEscaping);
+                }
             }
 
             public async Task WriteAsync(object value)
             {
                 Type valueType = value?.GetType() ?? typeof(object);
 
-                await JsonSerializer.WriteAsync(value, valueType, _writeStream, _jsonSerializerOptions);
+                await JsonSerializer.SerializeAsync(_writeStream, value, valueType, _jsonSerializerOptions);
                 await _writeStream.WriteAsync(_newlineDelimiter);
                 await _writeStream.FlushAsync();
             }
@@ -44,9 +51,9 @@ namespace Demo.AspNetCore.Mvc.FetchStreaming.NdjsonStream
             Encoding = Encoding.UTF8
         }.ToString();
 
-        private readonly MvcOptions _options;
+        private readonly JsonOptions _options;
 
-        public NdjsonWriterFactory(IOptions<MvcOptions> options)
+        public NdjsonWriterFactory(IOptions<JsonOptions> options)
         {
             _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
         }
@@ -74,15 +81,15 @@ namespace Demo.AspNetCore.Mvc.FetchStreaming.NdjsonStream
 
             DisableResponseBuffering(context.HttpContext);
 
-            return new NdjsonWriter(response.Body, _options.SerializerOptions);
+            return new NdjsonWriter(response.Body, _options);
         }
 
         private static void DisableResponseBuffering(HttpContext context)
         {
-            IHttpBufferingFeature bufferingFeature = context.Features.Get<IHttpBufferingFeature>();
-            if (bufferingFeature != null)
+            IHttpResponseBodyFeature responseBodyFeature = context.Features.Get<IHttpResponseBodyFeature>();
+            if (responseBodyFeature != null)
             {
-                bufferingFeature.DisableResponseBuffering();
+                responseBodyFeature.DisableBuffering();
             }
         }
     }
