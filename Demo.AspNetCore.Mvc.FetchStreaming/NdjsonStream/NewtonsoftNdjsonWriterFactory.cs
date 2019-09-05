@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Net.Http.Headers;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Lib.AspNetCore.Mvc.Ndjson;
 
 namespace Demo.AspNetCore.Mvc.FetchStreaming.NdjsonStream
 {
