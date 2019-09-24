@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Demo.AspNetCore.Mvc.FetchStreaming.NdjsonStream;
+using Lib.AspNetCore.Mvc.Ndjson;
 
 namespace Demo.AspNetCore.Mvc.FetchStreaming.Controllers
 {
