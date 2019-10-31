@@ -53,6 +53,12 @@ namespace Demo.AspNetCore.Mvc.FetchStreaming.Controllers
             return result;
         }
 
+        [HttpGet("enumerable")]
+        public NdjsonEnumerableResult GetEnumerable()
+        {
+            return new NdjsonEnumerableResult(EnumerateAsync());
+        }
+
         private async Task StreamAsync(NdjsonStreamResult result)
         {
             Random rng = new Random();
@@ -65,6 +71,18 @@ namespace Demo.AspNetCore.Mvc.FetchStreaming.Controllers
             };
 
             result.Complete();
+        }
+
+        private async IAsyncEnumerable<WeatherForecast> EnumerateAsync()
+        {
+            Random rng = new Random();
+
+            for (int index = 1; index <= 10; index++)
+            {
+                await Task.Delay(100);
+
+                yield return CreateWeatherForecast(index, rng);
+            };
         }
 
         private static WeatherForecast CreateWeatherForecast(int index, Random rng)

@@ -12,7 +12,7 @@ namespace Demo.AspNetCore.Mvc.FetchStreaming
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
-                .AddNdjsonStreamResult()
+                .AddNdjsonResults()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
