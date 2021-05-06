@@ -10,9 +10,6 @@
         fetchStreamButton = document.getElementById('fetch-stream');
         fetchStreamButton.addEventListener('click', fetchWeatherForecastsStream);
 
-        fetchStreamButton = document.getElementById('fetch-enumerable');
-        fetchStreamButton.addEventListener('click', fetchWeatherForecastsEnumerable);
-
         weatherForecastsTable = document.getElementById('weather-forecasts');
     }
 
@@ -32,12 +29,6 @@
         clearWeatherForecasts();
 
         fetchWeatherForecastsNdjson('api/WeatherForecasts/stream');
-    }
-
-    function fetchWeatherForecastsEnumerable() {
-        clearWeatherForecasts();
-
-        fetchWeatherForecastsNdjson('api/WeatherForecasts/enumerable');
     }
 
     function fetchWeatherForecastsNdjson(route) {

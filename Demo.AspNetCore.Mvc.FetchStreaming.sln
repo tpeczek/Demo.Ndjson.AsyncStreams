@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29230.61
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.AspNetCore.Mvc.FetchStreaming", "Demo.AspNetCore.Mvc.FetchStreaming\Demo.AspNetCore.Mvc.FetchStreaming.csproj", "{75DD6E3F-E55D-4DA5-A003-81E51978EBBB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Ndjson.AsyncStreams.AspNetCore.Mvc", "Demo.Ndjson.AsyncStreams.AspNetCore.Mvc\Demo.Ndjson.AsyncStreams.AspNetCore.Mvc.csproj", "{75DD6E3F-E55D-4DA5-A003-81E51978EBBB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

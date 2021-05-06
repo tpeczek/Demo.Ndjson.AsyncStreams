@@ -5,15 +5,15 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Demo.AspNetCore.Mvc.FetchStreaming
+namespace Demo.Ndjson.AsyncStreams.AspNetCore.Mvc
 {
     public class Startup
     {
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
-                .AddNdjsonResults()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                .AddNdjson()
+                .SetCompatibilityVersion(CompatibilityVersion.Latest);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -36,7 +36,7 @@ namespace Demo.AspNetCore.Mvc.FetchStreaming
                 })
                 .Run(async (context) =>
                 {
-                    await context.Response.WriteAsync("-- Demo.AspNetCore.Mvc.FetchStreaming --");
+                    await context.Response.WriteAsync("-- Demo.Ndjson.AsyncStreams.AspNetCore.Mvc --");
                 });
         }
     }

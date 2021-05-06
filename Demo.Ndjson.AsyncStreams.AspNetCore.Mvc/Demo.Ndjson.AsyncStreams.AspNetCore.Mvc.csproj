@@ -4,7 +4,6 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Lib.AspNetCore.Mvc.Ndjson" Version="3.0.0" />
-    <PackageReference Include="Lib.AspNetCore.Mvc.Ndjson.NewtonsoftJson" Version="4.0.0" />
+    <PackageReference Include="Ndjson.AsyncStreams.AspNetCore.Mvc" Version="1.0.0" />
   </ItemGroup>
 </Project>
