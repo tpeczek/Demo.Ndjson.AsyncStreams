@@ -1,8 +1,9 @@
-# Demo.AspNetCore.Mvc.FetchStreaming
+# Demo.Ndjson.AsyncStreams
 
-Sample project for demonstrating how to use Fetch API, Streams API, and NDJSON to improve user experience by streaming JSON objects from server to client in ASP.NET Core MVC. You can read more here:
+Sample project for demonstrating how to use async streams and NDJSON to improve user experience by streaming JSON objects from server to client and client to server in .NET. You can read more here:
 
 - [Fetch API, Streams API, NDJSON, and ASP.NET Core MVC](https://www.tpeczek.com/2019/04/fetch-api-streams-api-ndjson-and-aspnet.html)
+- [Consuming JSON Objects Stream (NDJSON) With HttpClient](https://www.tpeczek.com/2020/10/consuming-json-objects-stream-ndjson.html)
 
 ## Donating
 
@@ -14,4 +15,4 @@ My blog and open source projects are result of my passion for software developme
 
 Copyright © 2019 - 2021 Tomasz Pęczek
 
-Licensed under the [MIT License](https://github.com/tpeczek/Demo.AspNetCore.Mvc.FetchStreaming/blob/master/LICENSE.md)
+Licensed under the [MIT License](https://github.com/tpeczek/Demo.Ndjson.AsyncStreams/blob/master/LICENSE.md)
