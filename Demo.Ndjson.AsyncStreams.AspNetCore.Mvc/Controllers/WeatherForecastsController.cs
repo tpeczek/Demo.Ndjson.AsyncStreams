@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Ndjson.AsyncStreams.AspNetCore.Mvc;
+using Demo.WeatherForecasts;
 
 namespace Demo.Ndjson.AsyncStreams.AspNetCore.Mvc
 {
@@ -11,27 +12,12 @@ namespace Demo.Ndjson.AsyncStreams.AspNetCore.Mvc
     [ApiController]
     public class WeatherForecastsController : Controller
     {
-        public class WeatherForecast
-        {
-            public string DateFormatted { get; set; }
-
-            public int TemperatureC { get; set; }
-
-            public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-
-            public string Summary { get; set; }
-        }
-
-        private static readonly string[] SUMMARIES = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-        private static readonly Random RANDOM = new();
-
+        private readonly IWeatherForecaster _weatherForecaster;
         private readonly ILogger _logger;
 
-        public WeatherForecastsController(ILogger<WeatherForecastsController> logger)
+        public WeatherForecastsController(IWeatherForecaster weatherForecaster, ILogger<WeatherForecastsController> logger)
         {
+            _weatherForecaster = weatherForecaster;
             _logger = logger;
         }
 
@@ -42,7 +28,7 @@ namespace Demo.Ndjson.AsyncStreams.AspNetCore.Mvc
 
             for (int daysFromToday = 1; daysFromToday <= 10; daysFromToday++)
             {
-                weatherForecasts.Add(await GetWeatherForecastAsync(daysFromToday));
+                weatherForecasts.Add(await _weatherForecaster.GetWeatherForecastAsync(daysFromToday));
             };
 
             return weatherForecasts;
@@ -51,11 +37,11 @@ namespace Demo.Ndjson.AsyncStreams.AspNetCore.Mvc
         [HttpGet("stream")]
         public NdjsonAsyncEnumerableResult<WeatherForecast> GetStream()
         {
-            static async IAsyncEnumerable<WeatherForecast> streamWeatherForecastsAsync()
+            async IAsyncEnumerable<WeatherForecast> streamWeatherForecastsAsync()
             {
                 for (int daysFromToday = 1; daysFromToday <= 10; daysFromToday++)
                 {
-                    WeatherForecast weatherForecast = await GetWeatherForecastAsync(daysFromToday);
+                    WeatherForecast weatherForecast = await _weatherForecaster.GetWeatherForecastAsync(daysFromToday);
 
                     yield return weatherForecast;
                 };
@@ -73,18 +59,6 @@ namespace Demo.Ndjson.AsyncStreams.AspNetCore.Mvc
             }
 
             return Ok();
-        }
-
-        private static async Task<WeatherForecast> GetWeatherForecastAsync(int daysFromToday)
-        {
-            await Task.Delay(1000);
-
-            return new WeatherForecast
-            {
-                DateFormatted = DateTime.Now.AddDays(daysFromToday).ToString("d"),
-                TemperatureC = RANDOM.Next(-20, 55),
-                Summary = SUMMARIES[RANDOM.Next(SUMMARIES.Length)]
-            };
         }
     }
 }

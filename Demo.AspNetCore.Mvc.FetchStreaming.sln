@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.29230.61
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Ndjson.AsyncStreams.AspNetCore.Mvc", "Demo.Ndjson.AsyncStreams.AspNetCore.Mvc\Demo.Ndjson.AsyncStreams.AspNetCore.Mvc.csproj", "{75DD6E3F-E55D-4DA5-A003-81E51978EBBB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.WeatherForecasts", "Demo.WeatherForecasts\Demo.WeatherForecasts.csproj", "{5F6E1059-CF61-4EA6-9A2D-44C6B8949F99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Ndjson.AsyncStreams.Net.Http", "Demo.Ndjson.AsyncStreams.Net.Http\Demo.Ndjson.AsyncStreams.Net.Http.csproj", "{6D9AC9FF-3E29-435B-9190-2AF96ECC47EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{75DD6E3F-E55D-4DA5-A003-81E51978EBBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75DD6E3F-E55D-4DA5-A003-81E51978EBBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75DD6E3F-E55D-4DA5-A003-81E51978EBBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F6E1059-CF61-4EA6-9A2D-44C6B8949F99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F6E1059-CF61-4EA6-9A2D-44C6B8949F99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F6E1059-CF61-4EA6-9A2D-44C6B8949F99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F6E1059-CF61-4EA6-9A2D-44C6B8949F99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D9AC9FF-3E29-435B-9190-2AF96ECC47EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D9AC9FF-3E29-435B-9190-2AF96ECC47EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D9AC9FF-3E29-435B-9190-2AF96ECC47EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D9AC9FF-3E29-435B-9190-2AF96ECC47EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
