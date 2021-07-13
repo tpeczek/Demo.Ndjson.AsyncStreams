@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Ndjson.AsyncStreams.Net.Http;
@@ -13,6 +14,8 @@ namespace Demo.Ndjson.AsyncStreams.Net.Http
 
         static async Task Main(string[] args)
         {
+            await ConsumeJsonStreamAsync().ConfigureAwait(false);
+
             await ConsumeNdjsonStreamAsync().ConfigureAwait(false);
 
             await StreamNdjsonAsync().ConfigureAwait(false);
@@ -21,9 +24,28 @@ namespace Demo.Ndjson.AsyncStreams.Net.Http
             Console.ReadKey(true);
         }
 
+        private static async Task ConsumeJsonStreamAsync()
+        {
+            Console.WriteLine($"[{DateTime.UtcNow:hh:mm:ss.fff}] Receving weather forecasts . . .");
+
+            using HttpClient httpClient = new();
+
+            using HttpResponseMessage response = await httpClient.GetAsync("https://localhost:5001/api/WeatherForecasts/negotiate-stream", HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            IEnumerable<WeatherForecast> weatherForecasts = await response.Content.ReadFromJsonAsync<IEnumerable<WeatherForecast>>().ConfigureAwait(false);
+            foreach (WeatherForecast weatherForecast in weatherForecasts)
+            {
+                Console.WriteLine($"[{DateTime.UtcNow:hh:mm:ss.fff}] {weatherForecast.Summary}");
+            }
+
+            Console.WriteLine($"[{DateTime.UtcNow:hh:mm:ss.fff}] Weather forecasts has been received.");
+        }
+
         private static async Task ConsumeNdjsonStreamAsync()
         {
-            Console.WriteLine("Receving weather forecasts . . .");
+            Console.WriteLine($"[{DateTime.UtcNow:hh:mm:ss.fff}] Receving weather forecasts . . .");
 
             using HttpClient httpClient = new();
 
@@ -33,10 +55,10 @@ namespace Demo.Ndjson.AsyncStreams.Net.Http
 
             await foreach (WeatherForecast weatherForecast in response.Content!.ReadFromNdjsonAsync<WeatherForecast>().ConfigureAwait(false))
             {
-                Console.WriteLine(weatherForecast.Summary);
+                Console.WriteLine($"[{DateTime.UtcNow:hh:mm:ss.fff}] {weatherForecast.Summary}");
             }
 
-            Console.WriteLine("Weather forecasts has been received.");
+            Console.WriteLine($"[{DateTime.UtcNow:hh:mm:ss.fff}] Weather forecasts has been received.");
         }
 
         private static async Task StreamNdjsonAsync()

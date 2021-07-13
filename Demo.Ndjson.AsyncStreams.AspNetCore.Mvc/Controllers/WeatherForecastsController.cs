@@ -37,17 +37,13 @@ namespace Demo.Ndjson.AsyncStreams.AspNetCore.Mvc
         [HttpGet("stream")]
         public NdjsonAsyncEnumerableResult<WeatherForecast> GetStream()
         {
-            async IAsyncEnumerable<WeatherForecast> streamWeatherForecastsAsync()
-            {
-                for (int daysFromToday = 1; daysFromToday <= 10; daysFromToday++)
-                {
-                    WeatherForecast weatherForecast = await _weatherForecaster.GetWeatherForecastAsync(daysFromToday);
+            return new NdjsonAsyncEnumerableResult<WeatherForecast>(StreamWeatherForecastsAsync());
+        }
 
-                    yield return weatherForecast;
-                };
-            };
-
-            return new NdjsonAsyncEnumerableResult<WeatherForecast>(streamWeatherForecastsAsync());
+        [HttpGet("negotiate-stream")]
+        public IAsyncEnumerable<WeatherForecast> NegotiateStream()
+        {
+            return StreamWeatherForecastsAsync();
         }
 
         [HttpPost("stream")]
@@ -59,6 +55,16 @@ namespace Demo.Ndjson.AsyncStreams.AspNetCore.Mvc
             }
 
             return Ok();
+        }
+
+        private async IAsyncEnumerable<WeatherForecast> StreamWeatherForecastsAsync()
+        {
+            for (int daysFromToday = 1; daysFromToday <= 10; daysFromToday++)
+            {
+                WeatherForecast weatherForecast = await _weatherForecaster.GetWeatherForecastAsync(daysFromToday);
+
+                yield return weatherForecast;
+            };
         }
     }
 }
