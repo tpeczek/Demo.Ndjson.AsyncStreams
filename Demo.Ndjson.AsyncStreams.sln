@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Ndjson.AsyncStreams.As
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.WeatherForecasts", "Demo.WeatherForecasts\Demo.WeatherForecasts.csproj", "{5F6E1059-CF61-4EA6-9A2D-44C6B8949F99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Ndjson.AsyncStreams.Net.Http", "Demo.Ndjson.AsyncStreams.Net.Http\Demo.Ndjson.AsyncStreams.Net.Http.csproj", "{6D9AC9FF-3E29-435B-9190-2AF96ECC47EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Ndjson.AsyncStreams.Net.Http", "Demo.Ndjson.AsyncStreams.Net.Http\Demo.Ndjson.AsyncStreams.Net.Http.csproj", "{6D9AC9FF-3E29-435B-9190-2AF96ECC47EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
