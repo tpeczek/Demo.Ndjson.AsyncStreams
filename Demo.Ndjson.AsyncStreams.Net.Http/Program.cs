@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using Ndjson.AsyncStreams.Net.Http;
 using Demo.WeatherForecasts;
 
-
 namespace Demo.Ndjson.AsyncStreams.Net.Http
 {
     class Program
@@ -63,16 +62,16 @@ namespace Demo.Ndjson.AsyncStreams.Net.Http
             using HttpResponseMessage response = await httpClient.GetAsync("https://localhost:5001/api/WeatherForecasts/negotiate-stream", HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
+            using Stream responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
-            using Stream contentStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
             while (true)
             {
-                byte[] buffer = ArrayPool<byte>.Shared.Rent(Math.Max(16 * 1024, 3)); ;
-                int bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length);
+                byte[] buffer = ArrayPool<byte>.Shared.Rent(128);
+                int bytesRead = await responseStream.ReadAsync(buffer);
 
-                Console.Out.Write($"[{DateTime.UtcNow:hh:mm:ss.fff}] ({bytesRead}/{buffer.Length}) ");
-                Console.Out.Write(Encoding.UTF8.GetString(buffer));
-                Console.Out.WriteLine();
+                Console.WriteLine($"[{DateTime.UtcNow:hh:mm:ss.fff}] ({bytesRead}/{buffer.Length}) {Encoding.UTF8.GetString(buffer)}");
+
+                ArrayPool<byte>.Shared.Return(buffer);
 
                 if (bytesRead == 0)
                 {
@@ -95,8 +94,8 @@ namespace Demo.Ndjson.AsyncStreams.Net.Http
             using HttpResponseMessage response = await httpClient.GetAsync("https://localhost:5001/api/WeatherForecasts/negotiate-stream", HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
-
             using Stream responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+
             await foreach (WeatherForecast weatherForecast in JsonSerializer.DeserializeAsyncEnumerable<WeatherForecast>(responseStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true, DefaultBufferSize = 128 }))
             {
                 Console.WriteLine($"[{DateTime.UtcNow:hh:mm:ss.fff}] {weatherForecast.Summary}");
