@@ -35,18 +35,21 @@ namespace Demo.Ndjson.AsyncStreams.AspNetCore.Mvc
         }
 
         [HttpGet("stream")]
+        // This action always returns NDJSON.
         public NdjsonAsyncEnumerableResult<WeatherForecast> GetStream()
         {
             return new NdjsonAsyncEnumerableResult<WeatherForecast>(StreamWeatherForecastsAsync());
         }
 
         [HttpGet("negotiate-stream")]
+        // This action returns JSON or NDJSON depending on Accept request header.
         public IAsyncEnumerable<WeatherForecast> NegotiateStream()
         {
             return StreamWeatherForecastsAsync();
         }
 
         [HttpPost("stream")]
+        // This action accepts NDJSON.
         public async Task<IActionResult> PostStream(IAsyncEnumerable<WeatherForecast> weatherForecasts)
         {
             await foreach (WeatherForecast weatherForecast in weatherForecasts)
