@@ -30,6 +30,10 @@ namespace Demo.Ndjson.AsyncStreams.AspNetCore.Mvc
             defaultFilesOptions.DefaultFileNames.Clear();
             defaultFilesOptions.DefaultFileNames.Add("fetch-streaming.html");
 
+            app.UseCors(policy => policy.WithOrigins("http://localhost:5011", "https://localhost:5011")
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+
             app.UseDefaultFiles(defaultFilesOptions)
                 .UseStaticFiles()
                 .UseRouting()
