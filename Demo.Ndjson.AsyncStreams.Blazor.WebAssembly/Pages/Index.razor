@@ -1,13 +1,13 @@
 ﻿@page "/"
 @using System.Text.Json
-@using System.Buffers
-@using System.Text
+@using global::Ndjson.AsyncStreams.Net.Http
 @inject HttpClient Http
 
 <PageTitle>Demo.Ndjson.AsyncStreams.Blazor.WebAssembly</PageTitle>
 
 <button @onclick="FetchWeatherForecastsJson">Fetch Weather Forecast</button>
 <button @onclick="StreamWeatherForecastsJson">Stream Weather Forecast (JSON)</button>
+<button @onclick="StreamWeatherForecastsNdjson">Stream Weather Forecast (NDJSON)</button>
 <hr />
 <table>
     <thead>
@@ -47,6 +47,7 @@
         StateHasChanged();
 
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "api/WeatherForecasts/negotiate-stream");
+        request.Headers.Add("Accept", "application/json");
         request.SetBrowserResponseStreamingEnabled(true);
 
         using HttpResponseMessage response = await Http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
@@ -56,6 +57,28 @@
         using Stream responseStream = await response.Content.ReadAsStreamAsync();
 
         await foreach (WeatherForecast weatherForecast in JsonSerializer.DeserializeAsyncEnumerable<WeatherForecast>(responseStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true, DefaultBufferSize = 128 }))
+        {
+            weatherForecasts.Add(weatherForecast);
+
+            StateHasChanged();
+        }
+    }
+
+    private async Task StreamWeatherForecastsNdjson()
+    {
+        weatherForecasts = new List<WeatherForecast>();
+
+        StateHasChanged();
+
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "api/WeatherForecasts/negotiate-stream");
+        request.Headers.Add("Accept", "application/x-ndjson");
+        request.SetBrowserResponseStreamingEnabled(true);
+
+        using HttpResponseMessage response = await Http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+
+        response.EnsureSuccessStatusCode();
+
+        await foreach (WeatherForecast weatherForecast in response.Content.ReadFromNdjsonAsync<WeatherForecast>())
         {
             weatherForecasts.Add(weatherForecast);
 
