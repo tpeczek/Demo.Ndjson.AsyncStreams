@@ -15,7 +15,7 @@ namespace Demo.WeatherForecasts
 
         public async Task<WeatherForecast> GetWeatherForecastAsync(int daysFromToday, CancellationToken cancellationToken = default)
         {
-            await Task.Delay(1000, cancellationToken);
+            await Task.Delay(100, cancellationToken);
 
             return new WeatherForecast
             {
