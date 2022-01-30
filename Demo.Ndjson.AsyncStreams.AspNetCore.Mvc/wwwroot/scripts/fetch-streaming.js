@@ -1,7 +1,7 @@
 ﻿const FetchStreaming = (function () {
 
     let weatherForecastsTable;
-    let fetchButton, fetchStreamButton;
+    let fetchButton, fetchStreamButton, postWeatherForecastsNdjsonButton;
 
     function initializeUI() {
         fetchButton = document.getElementById('fetch');
@@ -10,8 +10,11 @@
         fetchStreamButton = document.getElementById('fetch-stream');
         fetchStreamButton.addEventListener('click', fetchWeatherForecastsStream);
 
+        postWeatherForecastsNdjsonButton = document.getElementById('post-weather-forecasts-ndjson');
+        postWeatherForecastsNdjsonButton.addEventListener('click', postWeatherForecastsNdjson);
+
         weatherForecastsTable = document.getElementById('weather-forecasts');
-    }
+    };
 
     function fetchWeatherForecasts() {
         clearWeatherForecasts();
@@ -23,13 +26,13 @@
             .then(function (weatherForecasts) {
                 weatherForecasts.forEach(appendWeatherForecast);
             });
-    }
+    };
 
     function fetchWeatherForecastsStream() {
         clearWeatherForecasts();
 
         fetchWeatherForecastsNdjson('api/WeatherForecasts/stream');
-    }
+    };
 
     function fetchWeatherForecastsNdjson(route) {
         clearWeatherForecasts();
@@ -42,13 +45,23 @@
 
                 readWeatherForecastsStream(weatherForecasts.getReader());
             });
-    }
+    };
+
+    function postWeatherForecastsNdjson() {
+        const weatherForecastsStream = WeatherForecaster.getWeatherForecastsStream().pipeThrough(new TextEncoderStream());
+
+        fetch('api/WeatherForecasts/stream', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-ndjson' },
+            body: weatherForecastsStream
+        });
+    };
 
     function clearWeatherForecasts() {
         for (let rowIndex = 1; rowIndex  < weatherForecastsTable.rows.length;) {
             weatherForecastsTable.deleteRow(rowIndex );
         }
-    }
+    };
 
     function parseNDJSON() {
         let ndjsonBuffer = '';
@@ -68,7 +81,7 @@
                 }
             }
         });
-    }
+    };
 
     function readWeatherForecastsStream(weatherForecastsStreamReader) {
         weatherForecastsStreamReader.read()
@@ -79,7 +92,7 @@
                     readWeatherForecastsStream(weatherForecastsStreamReader);
                 }
             });
-    }
+    };
 
     function appendWeatherForecast(weatherForecast) {
         let weatherForecastRow = weatherForecastsTable.insertRow(-1);
@@ -88,7 +101,7 @@
         weatherForecastRow.insertCell(1).appendChild(document.createTextNode(weatherForecast.temperatureC));
         weatherForecastRow.insertCell(2).appendChild(document.createTextNode(weatherForecast.temperatureF));
         weatherForecastRow.insertCell(3).appendChild(document.createTextNode(weatherForecast.summary));
-    }
+    };
 
     return {
         initialize: function () {
