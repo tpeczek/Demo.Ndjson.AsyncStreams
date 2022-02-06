@@ -1,7 +1,7 @@
 ﻿const FetchStreaming = (function () {
 
     let weatherForecastsTable;
-    let fetchButton, fetchStreamButton;
+    let fetchButton, fetchStreamButton, streamWeatherForecastsJsonButton;
 
     function initializeUI() {
         fetchButton = document.getElementById('fetch');
@@ -9,6 +9,9 @@
 
         fetchStreamButton = document.getElementById('fetch-stream');
         fetchStreamButton.addEventListener('click', fetchWeatherForecastsStream);
+
+        streamWeatherForecastsJsonButton = document.getElementById('stream-weather-forecasts-json');
+        streamWeatherForecastsJsonButton.addEventListener('click', streamWeatherForecastsJson);
 
         weatherForecastsTable = document.getElementById('weather-forecasts');
     }
@@ -41,6 +44,15 @@
                     .pipeThrough(parseNDJSON());
 
                 readWeatherForecastsStream(weatherForecasts.getReader());
+            });
+    }
+
+    function streamWeatherForecastsJson() {
+        clearWeatherForecasts();
+
+        oboe('api/WeatherForecasts/negotiate-stream')
+            .node('!.*', function (weatherForecast) {
+                appendWeatherForecast(weatherForecast);
             });
     }
 
