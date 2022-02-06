@@ -53,12 +53,20 @@
     }
 
     function streamWeatherForecastsJson() {
+        abortController = new AbortController();
+        const abortSignal = abortController.signal;
+
+        switchButtonsState(true);
         clearWeatherForecasts();
 
-        oboe('api/WeatherForecasts/negotiate-stream')
+        const oboeInstance = oboe('api/WeatherForecasts/negotiate-stream')
             .node('!.*', function (weatherForecast) {
                 appendWeatherForecast(weatherForecast);
             });
+
+        abortSignal.onabort = function () {
+            oboeInstance.abort();
+        };
     }
 
     function triggerAbortSignal() {
@@ -71,6 +79,7 @@
     function switchButtonsState(operationInProgress) {
         fetchWeatherForecastsButton.disabled = operationInProgress;
         streamWeatherForecastsNdjsonButton.disabled = operationInProgress;
+        streamWeatherForecastsJsonButton.disabled = operationInProgress;
         abortButton.disabled = !operationInProgress;
     }
 
