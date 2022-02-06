@@ -7,6 +7,7 @@
 <body>
     <button id="fetch-weather-forecasts">Fetch Weather Forecast</button>
     <button id="stream-weather-forecasts-ndjson">Stream Weather Forecast (NDJSON)</button>
+    <button id="stream-weather-forecasts-json">Stream Weather Forecast (JSON)</button>
     <button id="abort" disabled>Abort Operation</button>
     <hr />
     <table id="weather-forecasts">
@@ -20,6 +21,7 @@
         </thead>
         <tbody></tbody>
     </table>
+    <script src="scripts/oboe-browser.min.js"></script>
     <script src="scripts/fetch-streaming.js"></script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 
     let abortController;
     let weatherForecastsTable;
-    let fetchWeatherForecastsButton, streamWeatherForecastsNdjsonButton, abortButton;
+    let fetchWeatherForecastsButton, streamWeatherForecastsNdjsonButton, streamWeatherForecastsJsonButton, abortButton;
 
     function initializeUI() {
         fetchWeatherForecastsButton = document.getElementById('fetch-weather-forecasts');
@@ -10,6 +10,9 @@
 
         streamWeatherForecastsNdjsonButton = document.getElementById('stream-weather-forecasts-ndjson');
         streamWeatherForecastsNdjsonButton.addEventListener('click', streamWeatherForecastsNdjson);
+
+        streamWeatherForecastsJsonButton = document.getElementById('stream-weather-forecasts-json');
+        streamWeatherForecastsJsonButton.addEventListener('click', streamWeatherForecastsJson);
 
         abortButton = document.getElementById('abort');
         abortButton.addEventListener('click', triggerAbortSignal);
@@ -46,6 +49,15 @@
                     .pipeThrough(transformWeatherForecastsNdjsonStream());
 
                 readWeatherForecastsNdjsonStream(weatherForecasts.getReader());
+            });
+    }
+
+    function streamWeatherForecastsJson() {
+        clearWeatherForecasts();
+
+        oboe('api/WeatherForecasts/negotiate-stream')
+            .node('!.*', function (weatherForecast) {
+                appendWeatherForecast(weatherForecast);
             });
     }
 
