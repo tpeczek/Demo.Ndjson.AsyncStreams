@@ -62,6 +62,9 @@
         const oboeInstance = oboe('api/WeatherForecasts/negotiate-stream')
             .node('!.*', function (weatherForecast) {
                 appendWeatherForecast(weatherForecast);
+            })
+            .done(function () {
+                switchButtonsState(false);
             });
 
         abortSignal.onabort = function () {
