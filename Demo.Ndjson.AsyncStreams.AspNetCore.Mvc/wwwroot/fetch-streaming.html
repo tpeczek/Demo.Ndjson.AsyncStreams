@@ -5,9 +5,10 @@
     <title>Demo.Ndjson.AsyncStreams.AspNetCore.Mvc</title>
 </head>
 <body>
-    <button id="fetch">Fetch Weather Forecast</button>
-    <button id="fetch-stream">Fetch Weather Forecast (Stream)</button>
-    <button id="post-weather-forecasts-ndjson">Post Weather Forecast (NDJSON)</button>
+    <button id="fetch-weather-forecasts-json">Fetch Weather Forecast</button>
+    <button id="fetch-weather-forecasts-json-stream">Fetch Weather Forecast Stream (JSON)</button>
+    <button id="fetch-weather-forecasts-ndjson-stream">Fetch Weather Forecast Stream (NDJSON)</button>
+    <button id="post-weather-forecasts-ndjson-stream">Post Weather Forecast Stream (NDJSON)</button>
     <hr />
     <table id="weather-forecasts">
         <thead>
@@ -20,6 +21,7 @@
         </thead>
         <tbody></tbody>
     </table>
+    <script src="scripts/oboe-browser.min.js"></script>
     <script src="scripts/weather-forecaster.js"></script>
     <script src="scripts/fetch-streaming.js"></script>
 </body>

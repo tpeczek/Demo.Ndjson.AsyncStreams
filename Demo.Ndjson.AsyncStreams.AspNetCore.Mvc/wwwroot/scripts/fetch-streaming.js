@@ -1,22 +1,25 @@
 ﻿const FetchStreaming = (function () {
 
     let weatherForecastsTable;
-    let fetchButton, fetchStreamButton, postWeatherForecastsNdjsonButton;
+    let fetchWeatherForecastsJsonButton, fetchWeatherForecastsJsonStreamButton, fetchWeatherForecastsNdjsonStreamButton, postWeatherForecastsNdjsonStreamButton;
 
     function initializeUI() {
-        fetchButton = document.getElementById('fetch');
-        fetchButton.addEventListener('click', fetchWeatherForecasts);
+        fetchWeatherForecastsJsonButton = document.getElementById('fetch-weather-forecasts-json');
+        fetchWeatherForecastsJsonButton.addEventListener('click', fetchWeatherForecastsJson);
 
-        fetchStreamButton = document.getElementById('fetch-stream');
-        fetchStreamButton.addEventListener('click', fetchWeatherForecastsStream);
+        fetchWeatherForecastsJsonStreamButton = document.getElementById('fetch-weather-forecasts-json-stream');
+        fetchWeatherForecastsJsonStreamButton.addEventListener('click', fetchWeatherForecastsJsonStream);
 
-        postWeatherForecastsNdjsonButton = document.getElementById('post-weather-forecasts-ndjson');
-        postWeatherForecastsNdjsonButton.addEventListener('click', postWeatherForecastsNdjson);
+        fetchWeatherForecastsNdjsonStreamButton = document.getElementById('fetch-weather-forecasts-ndjson-stream');
+        fetchWeatherForecastsNdjsonStreamButton.addEventListener('click', fetchWeatherForecastsNdjsonStream);
 
+        postWeatherForecastsNdjsonStreamButton = document.getElementById('post-weather-forecasts-ndjson-stream');
+        postWeatherForecastsNdjsonStreamButton.addEventListener('click', postWeatherForecastsNdjsonStream);
+        
         weatherForecastsTable = document.getElementById('weather-forecasts');
     };
 
-    function fetchWeatherForecasts() {
+    function fetchWeatherForecastsJson() {
         clearWeatherForecasts();
 
         fetch('api/WeatherForecasts')
@@ -28,16 +31,19 @@
             });
     };
 
-    function fetchWeatherForecastsStream() {
+    function fetchWeatherForecastsJsonStream() {
         clearWeatherForecasts();
 
-        fetchWeatherForecastsNdjson('api/WeatherForecasts/stream');
-    };
+        oboe('api/WeatherForecasts/negotiate-stream')
+            .node('!.*', function (weatherForecast) {
+                appendWeatherForecast(weatherForecast);
+            });
+    }
 
-    function fetchWeatherForecastsNdjson(route) {
+    function fetchWeatherForecastsNdjsonStream() {
         clearWeatherForecasts();
 
-        fetch(route)
+        fetch('api/WeatherForecasts/stream')
             .then(function (response) {
                 const weatherForecasts = response.body
                     .pipeThrough(new TextDecoderStream())
@@ -47,7 +53,7 @@
             });
     };
 
-    function postWeatherForecastsNdjson() {
+    function postWeatherForecastsNdjsonStream() {
         const weatherForecastsStream = WeatherForecaster.getWeatherForecastsStream().pipeThrough(new TextEncoderStream());
 
         fetch('api/WeatherForecasts/stream', {
