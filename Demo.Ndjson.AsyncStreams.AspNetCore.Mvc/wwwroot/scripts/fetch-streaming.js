@@ -59,7 +59,8 @@
         fetch('api/WeatherForecasts/stream', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-ndjson' },
-            body: weatherForecastsStream
+            body: weatherForecastsStream,
+            duplex: 'half'
         });
     };
 

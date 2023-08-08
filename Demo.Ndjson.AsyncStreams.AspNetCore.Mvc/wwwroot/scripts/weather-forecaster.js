@@ -6,10 +6,10 @@
     };
 
     async function getRandomWeatherForecast(daysFromToday) {
-        await delay(100);
+        await delay(1000);
 
-        const todayDate = new Date();
-        const daysFromTodayDate = todayDate.setDate(todayDate.getDate() + daysFromToday);
+        const daysFromTodayDate = new Date();
+        daysFromTodayDate.setDate(daysFromTodayDate.getDate() + daysFromToday);
         const temperatureC = Math.floor(Math.random() * (75)) - 20;
 
         return {
@@ -25,7 +25,9 @@
             async start(controller) {
 
                 for (let daysFromToday = 1; daysFromToday <= 10; daysFromToday++) {
-                    controller.enqueue(JSON.stringify(await getRandomWeatherForecast(daysFromToday)) + '\n');
+                    const randomWeatherForecast = await getRandomWeatherForecast(daysFromToday);
+                    const randomWeatherForecastJson = JSON.stringify(randomWeatherForecast);
+                    controller.enqueue(randomWeatherForecastJson + '\n');
                 };
                 
                 controller.close();
