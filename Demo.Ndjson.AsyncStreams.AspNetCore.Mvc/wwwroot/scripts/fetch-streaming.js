@@ -73,8 +73,6 @@
                     .pipeThrough(transformNdjsonStream());
 
                 readWeatherForecastsNdjsonStream(weatherForecasts.getReader());
-
-                switchButtonsState(false);
             });
     };
 
@@ -113,7 +111,6 @@
         }
     };
 
-    
     function appendWeatherForecast(weatherForecast) {
         let weatherForecastRow = weatherForecastsTable.insertRow(-1);
 

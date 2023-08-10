@@ -46,6 +46,10 @@
 
         IsOperationInProgress = true;
 
+        weatherForecasts = new List<WeatherForecast>();
+
+        StateHasChanged();
+
         try
         {
             weatherForecasts = await Http.GetFromJsonAsync<List<WeatherForecast>>("api/WeatherForecasts", cancellationToken) ?? new List<WeatherForecast>();
@@ -53,6 +57,8 @@
         finally
         {
             IsOperationInProgress = false;
+
+            StateHasChanged();
         }
     }
 
@@ -93,6 +99,8 @@
         finally
         {
             IsOperationInProgress = false;
+
+            StateHasChanged();
         }
     }
 
@@ -131,6 +139,8 @@
         finally
         {
             IsOperationInProgress = false;
+
+            StateHasChanged();
         }
     }
 
