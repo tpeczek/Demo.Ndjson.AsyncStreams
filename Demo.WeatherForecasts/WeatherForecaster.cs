@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Demo.WeatherForecasts
@@ -12,9 +13,9 @@ namespace Demo.WeatherForecasts
 
         private readonly Random _random = new();
 
-        public async Task<WeatherForecast> GetWeatherForecastAsync(int daysFromToday)
+        public async Task<WeatherForecast> GetWeatherForecastAsync(int daysFromToday, CancellationToken cancellationToken = default)
         {
-            await Task.Delay(100);
+            await Task.Delay(100, cancellationToken);
 
             return new WeatherForecast
             {

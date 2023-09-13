@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Demo.Ndjson.AsyncStreams.Blazor.WebAssembly": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:8081;http://localhost:8080"
+    }
+  }
+}

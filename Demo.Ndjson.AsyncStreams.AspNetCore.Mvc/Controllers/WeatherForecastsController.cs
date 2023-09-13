@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Ndjson.AsyncStreams.AspNetCore.Mvc;
 using Demo.WeatherForecasts;
+using System.Threading;
+using System.Runtime.CompilerServices;
 
 namespace Demo.Ndjson.AsyncStreams.AspNetCore.Mvc
 {
@@ -22,13 +24,13 @@ namespace Demo.Ndjson.AsyncStreams.AspNetCore.Mvc
         }
 
         [HttpGet]
-        public async Task<IEnumerable<WeatherForecast>> Get()
+        public async Task<IEnumerable<WeatherForecast>> Get(CancellationToken cancellationToken)
         {
             List<WeatherForecast> weatherForecasts = new();
 
             for (int daysFromToday = 1; daysFromToday <= 10; daysFromToday++)
             {
-                weatherForecasts.Add(await _weatherForecaster.GetWeatherForecastAsync(daysFromToday));
+                weatherForecasts.Add(await _weatherForecaster.GetWeatherForecastAsync(daysFromToday, cancellationToken));
             };
 
             return weatherForecasts;
@@ -36,16 +38,16 @@ namespace Demo.Ndjson.AsyncStreams.AspNetCore.Mvc
 
         [HttpGet("stream")]
         // This action always returns NDJSON.
-        public NdjsonAsyncEnumerableResult<WeatherForecast> GetStream()
+        public NdjsonAsyncEnumerableResult<WeatherForecast> GetStream(CancellationToken cancellationToken)
         {
-            return new NdjsonAsyncEnumerableResult<WeatherForecast>(StreamWeatherForecastsAsync());
+            return new NdjsonAsyncEnumerableResult<WeatherForecast>(StreamWeatherForecastsAsync(cancellationToken));
         }
 
         [HttpGet("negotiate-stream")]
         // This action returns JSON or NDJSON depending on Accept request header.
-        public IAsyncEnumerable<WeatherForecast> NegotiateStream()
+        public IAsyncEnumerable<WeatherForecast> NegotiateStream(CancellationToken cancellationToken)
         {
-            return StreamWeatherForecastsAsync();
+            return StreamWeatherForecastsAsync(cancellationToken);
         }
 
         [HttpPost("stream")]
@@ -60,11 +62,11 @@ namespace Demo.Ndjson.AsyncStreams.AspNetCore.Mvc
             return Ok();
         }
 
-        private async IAsyncEnumerable<WeatherForecast> StreamWeatherForecastsAsync()
+        private async IAsyncEnumerable<WeatherForecast> StreamWeatherForecastsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             for (int daysFromToday = 1; daysFromToday <= 10; daysFromToday++)
             {
-                WeatherForecast weatherForecast = await _weatherForecaster.GetWeatherForecastAsync(daysFromToday);
+                WeatherForecast weatherForecast = await _weatherForecaster.GetWeatherForecastAsync(daysFromToday, cancellationToken);
 
                 yield return weatherForecast;
             };

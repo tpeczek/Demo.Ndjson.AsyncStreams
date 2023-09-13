@@ -5,9 +5,10 @@
 
 <PageTitle>Demo.Ndjson.AsyncStreams.Blazor.WebAssembly</PageTitle>
 
-<button @onclick="FetchWeatherForecastsJson">Fetch Weather Forecast</button>
-<button @onclick="StreamWeatherForecastsJson">Stream Weather Forecast (JSON)</button>
-<button @onclick="StreamWeatherForecastsNdjson">Stream Weather Forecast (NDJSON)</button>
+<button disabled="@IsOperationInProgress" @onclick="FetchWeatherForecastsJson">Fetch Weather Forecast</button>
+<button disabled="@IsOperationInProgress" @onclick="StreamWeatherForecastsJson">Stream Weather Forecast (JSON)</button>
+<button disabled="@IsOperationInProgress" @onclick="StreamWeatherForecastsNdjson">Stream Weather Forecast (NDJSON)</button>
+<button disabled="@IsOperationNotInProgress" @onclick="TriggerCancellation">Abort Operation</button>
 <hr />
 <table>
     <thead>
@@ -32,33 +33,72 @@
 </table>
 
 @code {
+    private bool IsOperationInProgress { get; set; } = false;
 
+    private bool IsOperationNotInProgress => !IsOperationInProgress;
+
+    private CancellationTokenSource? cancellationTokenSource = null;
     private List<WeatherForecast> weatherForecasts = new List<WeatherForecast>();
 
     private async Task FetchWeatherForecastsJson()
     {
-        weatherForecasts = await Http.GetFromJsonAsync<List<WeatherForecast>>("api/WeatherForecasts") ?? new List<WeatherForecast>();
-    }
+        CancellationToken cancellationToken = GetCancellationToken();
 
-    private async Task StreamWeatherForecastsJson()
-    {
+        IsOperationInProgress = true;
+
         weatherForecasts = new List<WeatherForecast>();
 
         StateHasChanged();
 
-        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "api/WeatherForecasts/negotiate-stream");
-        request.Headers.Add("Accept", "application/json");
-        request.SetBrowserResponseStreamingEnabled(true);
-
-        using HttpResponseMessage response = await Http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-
-        response.EnsureSuccessStatusCode();
-
-        using Stream responseStream = await response.Content.ReadAsStreamAsync();
-
-        await foreach (WeatherForecast weatherForecast in JsonSerializer.DeserializeAsyncEnumerable<WeatherForecast>(responseStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true, DefaultBufferSize = 128 }))
+        try
         {
-            weatherForecasts.Add(weatherForecast);
+            weatherForecasts = await Http.GetFromJsonAsync<List<WeatherForecast>>("api/WeatherForecasts", cancellationToken) ?? new List<WeatherForecast>();
+        }
+        finally
+        {
+            IsOperationInProgress = false;
+
+            StateHasChanged();
+        }
+    }
+
+    private async Task StreamWeatherForecastsJson()
+    {
+        CancellationToken cancellationToken = GetCancellationToken();
+
+        IsOperationInProgress = true;
+
+        try
+        {
+            weatherForecasts = new List<WeatherForecast>();
+
+            StateHasChanged();
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "api/WeatherForecasts/negotiate-stream");
+            request.Headers.Add("Accept", "application/json");
+            request.SetBrowserResponseStreamingEnabled(true);
+
+            using HttpResponseMessage response = await Http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+
+            response.EnsureSuccessStatusCode();
+
+            using Stream responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
+
+            await foreach (WeatherForecast weatherForecast in JsonSerializer.DeserializeAsyncEnumerable<WeatherForecast>(responseStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true, DefaultBufferSize = 128 }, cancellationToken))
+            {
+                weatherForecasts.Add(weatherForecast);
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+
+                StateHasChanged();
+            }
+        }
+        finally
+        {
+            IsOperationInProgress = false;
 
             StateHasChanged();
         }
@@ -66,23 +106,54 @@
 
     private async Task StreamWeatherForecastsNdjson()
     {
-        weatherForecasts = new List<WeatherForecast>();
+        CancellationToken cancellationToken = GetCancellationToken();
 
-        StateHasChanged();
+        IsOperationInProgress = true;
 
-        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "api/WeatherForecasts/negotiate-stream");
-        request.Headers.Add("Accept", "application/x-ndjson");
-        request.SetBrowserResponseStreamingEnabled(true);
-
-        using HttpResponseMessage response = await Http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-
-        response.EnsureSuccessStatusCode();
-
-        await foreach (WeatherForecast weatherForecast in response.Content.ReadFromNdjsonAsync<WeatherForecast>())
+        try
         {
-            weatherForecasts.Add(weatherForecast);
+            weatherForecasts = new List<WeatherForecast>();
+
+            StateHasChanged();
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "api/WeatherForecasts/negotiate-stream");
+            request.Headers.Add("Accept", "application/x-ndjson");
+            request.SetBrowserResponseStreamingEnabled(true);
+
+            using HttpResponseMessage response = await Http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+
+            response.EnsureSuccessStatusCode();
+
+            await foreach (WeatherForecast weatherForecast in response.Content.ReadFromNdjsonAsync<WeatherForecast>(cancellationToken: cancellationToken))
+            {
+                weatherForecasts.Add(weatherForecast);
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+
+                StateHasChanged();
+            }
+        }
+        finally
+        {
+            IsOperationInProgress = false;
 
             StateHasChanged();
         }
+    }
+
+    private CancellationToken GetCancellationToken()
+    {
+        cancellationTokenSource = new CancellationTokenSource();
+        return cancellationTokenSource.Token;
+    }
+
+    private void TriggerCancellation()
+    {
+        cancellationTokenSource?.Cancel();
+        cancellationTokenSource?.Dispose();
+        cancellationTokenSource = null;
     }
 }

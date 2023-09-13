@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
@@ -13,8 +12,7 @@ namespace Demo.Ndjson.AsyncStreams.AspNetCore.Mvc
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
-                .AddNdjson()
-                .SetCompatibilityVersion(CompatibilityVersion.Latest);
+                .AddNdjson();
 
             services.AddSingleton<IWeatherForecaster, WeatherForecaster>();
         }
@@ -30,7 +28,7 @@ namespace Demo.Ndjson.AsyncStreams.AspNetCore.Mvc
             defaultFilesOptions.DefaultFileNames.Clear();
             defaultFilesOptions.DefaultFileNames.Add("fetch-streaming.html");
 
-            app.UseCors(policy => policy.WithOrigins("http://localhost:5011", "https://localhost:5011")
+            app.UseCors(policy => policy.WithOrigins("http://localhost:8080", "https://localhost:8081")
                 .AllowAnyMethod()
                 .AllowAnyHeader());
 
