@@ -7,7 +7,6 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Ndjson.AsyncStreams.Net.Http;
 using Demo.WeatherForecasts;
 
@@ -34,13 +33,13 @@ namespace Demo.Ndjson.AsyncStreams.Net.Http
 
             try
             {
-                //await ConsumeNdjsonStreamAsync(cancellationToken).ConfigureAwait(false);
+                await ConsumeNdjsonStreamAsync(cancellationToken).ConfigureAwait(false);
 
-                //await NegotiateRawJsonStreamAsync(cancellationToken).ConfigureAwait(false);
+                await NegotiateRawJsonStreamAsync(cancellationToken).ConfigureAwait(false);
 
-                //await NegotiateJsonStreamAsync(cancellationToken).ConfigureAwait(false);
+                await NegotiateJsonStreamAsync(cancellationToken).ConfigureAwait(false);
 
-                //await NegotiateNdjsonStreamAsync(cancellationToken).ConfigureAwait(false);
+                await NegotiateNdjsonStreamAsync(cancellationToken).ConfigureAwait(false);
 
                 await StreamNdjsonAsync(cancellationToken).ConfigureAwait(false);
 
