@@ -9,6 +9,7 @@ var app = builder.Build();
 
 app.MapGet("/", () => "-- Demo.Ndjson.AsyncStreams.AspNetCore.MinimalApi --");
 
+// This endpoint returns JSON.
 app.MapGet("/api/WeatherForecasts", async (IWeatherForecaster weatherForecaster, CancellationToken cancellationToken) =>
 {
     List<WeatherForecast> weatherForecasts = new();
@@ -21,26 +22,15 @@ app.MapGet("/api/WeatherForecasts", async (IWeatherForecaster weatherForecaster,
     return weatherForecasts;
 });
 
-// This endpoint always returns NDJSON.
-//app.MapGet("/api/WeatherForecasts/stream", (IWeatherForecaster weatherForecaster, CancellationToken cancellationToken) => Results.Ndjson(StreamWeatherForecastsAsync(weatherForecaster, cancellationToken)));
-
-// This action accepts NDJSON.
-//app.MapPost("/api/WeatherForecasts/stream", async (IAsyncEnumerable<WeatherForecast> weatherForecasts, ILogger logger) =>
-//{
-//    await foreach (WeatherForecast weatherForecast in weatherForecasts)
-//    {
-//        logger.LogInformation($"{weatherForecast.Summary} ({DateTime.UtcNow})");
-//    }
-
-//    return Results.Ok;
-//});
-
-// This action returns JSON or NDJSON depending on Accept request header.
+// This endpoint returns streamed JSON.
 app.MapGet("/api/WeatherForecasts/negotiate-stream", (IWeatherForecaster weatherForecaster, CancellationToken cancellationToken) => StreamWeatherForecastsAsync(weatherForecaster, cancellationToken));
+
+// This endpoint returns NDJSON.
+app.MapGet("/api/WeatherForecasts/stream", (IWeatherForecaster weatherForecaster, CancellationToken cancellationToken) => Results.Extensions.Ndjson(StreamWeatherForecastsAsync(weatherForecaster, cancellationToken)));
 
 app.Run();
 
-async IAsyncEnumerable<WeatherForecast> StreamWeatherForecastsAsync(IWeatherForecaster weatherForecaster, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+static async IAsyncEnumerable<WeatherForecast> StreamWeatherForecastsAsync(IWeatherForecaster weatherForecaster, [EnumeratorCancellation] CancellationToken cancellationToken = default)
 {
     for (int daysFromToday = 1; daysFromToday <= 10; daysFromToday++)
     {
