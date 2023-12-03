@@ -1,0 +1,13 @@
+﻿{
+  "profiles": {
+    "Demo.Ndjson.AsyncStreams.AspNetCore.MinimalApi": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "https://localhost:7188;http://localhost:5152",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

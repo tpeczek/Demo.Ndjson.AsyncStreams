@@ -14,6 +14,9 @@ namespace Demo.Ndjson.AsyncStreams.Net.Http
 {
     class Program
     {
+        private const string BASE_URL = "https://localhost:5001";
+        // private const string BASE_URL = "https://localhost:7188";
+
         private static readonly IWeatherForecaster _weatherForecaster = new WeatherForecaster();
 
         static async Task Main(string[] args)
@@ -61,7 +64,7 @@ namespace Demo.Ndjson.AsyncStreams.Net.Http
 
             using HttpClient httpClient = new();
 
-            using HttpResponseMessage response = await httpClient.GetAsync("https://localhost:5001/api/WeatherForecasts/stream", HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+            using HttpResponseMessage response = await httpClient.GetAsync($"{BASE_URL}/api/WeatherForecasts/stream", HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
 
@@ -82,7 +85,7 @@ namespace Demo.Ndjson.AsyncStreams.Net.Http
             using HttpClient httpClient = new();
             httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
 
-            using HttpResponseMessage response = await httpClient.GetAsync("https://localhost:5001/api/WeatherForecasts/negotiate-stream", HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+            using HttpResponseMessage response = await httpClient.GetAsync($"{BASE_URL}/api/WeatherForecasts/negotiate-stream", HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
             using Stream responseStream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
@@ -114,7 +117,7 @@ namespace Demo.Ndjson.AsyncStreams.Net.Http
             using HttpClient httpClient = new();
             httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
 
-            using HttpResponseMessage response = await httpClient.GetAsync("https://localhost:5001/api/WeatherForecasts/negotiate-stream", HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+            using HttpResponseMessage response = await httpClient.GetAsync($"{BASE_URL}/api/WeatherForecasts/negotiate-stream", HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
             using Stream responseStream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
@@ -136,7 +139,7 @@ namespace Demo.Ndjson.AsyncStreams.Net.Http
             using HttpClient httpClient = new();
             httpClient.DefaultRequestHeaders.Add("Accept", "application/x-ndjson");
 
-            using HttpResponseMessage response = await httpClient.GetAsync("https://localhost:5001/api/WeatherForecasts/negotiate-stream", HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+            using HttpResponseMessage response = await httpClient.GetAsync($"{BASE_URL}/api/WeatherForecasts/negotiate-stream", HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
 
@@ -166,7 +169,7 @@ namespace Demo.Ndjson.AsyncStreams.Net.Http
 
             using HttpClient httpClient = new();
 
-            using HttpResponseMessage response = await httpClient.PostAsNdjsonAsync("https://localhost:5001/api/WeatherForecasts/stream", streamWeatherForecastsAsync(), cancellationToken).ConfigureAwait(false);
+            using HttpResponseMessage response = await httpClient.PostAsNdjsonAsync($"{BASE_URL}/api/WeatherForecasts/stream", streamWeatherForecastsAsync(), cancellationToken).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
 
