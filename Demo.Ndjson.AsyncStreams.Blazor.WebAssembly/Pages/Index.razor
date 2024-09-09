@@ -6,8 +6,8 @@
 <PageTitle>Demo.Ndjson.AsyncStreams.Blazor.WebAssembly</PageTitle>
 
 <button disabled="@IsOperationInProgress" @onclick="FetchWeatherForecastsJson">Fetch Weather Forecast</button>
-<button disabled="@IsOperationInProgress" @onclick="StreamWeatherForecastsJson">Stream Weather Forecast (JSON)</button>
-<button disabled="@IsOperationInProgress" @onclick="StreamWeatherForecastsNdjson">Stream Weather Forecast (NDJSON)</button>
+<button disabled="@IsOperationInProgress" @onclick="FetchWeatherForecastsJsonStream">Fetch Weather Forecast Stream (JSON)</button>
+<button disabled="@IsOperationInProgress" @onclick="FetchWeatherForecastsNdjsonStream">Fetch Weather Forecast Stream (NDJSON)</button>
 <button disabled="@IsOperationNotInProgress" @onclick="TriggerCancellation">Abort Operation</button>
 <hr />
 <table>
@@ -62,7 +62,7 @@
         }
     }
 
-    private async Task StreamWeatherForecastsJson()
+    private async Task FetchWeatherForecastsJsonStream()
     {
         CancellationToken cancellationToken = GetCancellationToken();
 
@@ -104,7 +104,7 @@
         }
     }
 
-    private async Task StreamWeatherForecastsNdjson()
+    private async Task FetchWeatherForecastsNdjsonStream()
     {
         CancellationToken cancellationToken = GetCancellationToken();
 
