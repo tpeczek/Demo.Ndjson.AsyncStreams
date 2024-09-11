@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Buffers;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,6 +44,8 @@ namespace Demo.Ndjson.AsyncStreams.Net.Http
                 await NegotiateJsonStreamAsync(cancellationToken).ConfigureAwait(false);
 
                 await NegotiateNdjsonStreamAsync(cancellationToken).ConfigureAwait(false);
+
+                await StreamJsonStreamAsync(cancellationToken).ConfigureAwait(false);
 
                 await StreamNdjsonAsync(cancellationToken).ConfigureAwait(false);
 
@@ -154,27 +157,43 @@ namespace Demo.Ndjson.AsyncStreams.Net.Http
 
         private static async Task StreamNdjsonAsync(CancellationToken cancellationToken)
         {
-            static async IAsyncEnumerable<WeatherForecast> streamWeatherForecastsAsync()
-            {
-                for (int daysFromToday = 1; daysFromToday <= 10; daysFromToday++)
-                {
-                    WeatherForecast weatherForecast = await _weatherForecaster.GetWeatherForecastAsync(daysFromToday).ConfigureAwait(false);
-
-                    yield return weatherForecast;
-                };
-            };
-
             Console.WriteLine($"-- {nameof(StreamNdjsonAsync)} --");
             Console.WriteLine("Sending weather forecasts . . .");
 
             using HttpClient httpClient = new();
 
-            using HttpResponseMessage response = await httpClient.PostAsNdjsonAsync($"{BASE_URL}/api/WeatherForecasts/stream", streamWeatherForecastsAsync(), cancellationToken).ConfigureAwait(false);
+            using HttpResponseMessage response = await httpClient.PostAsNdjsonAsync($"{BASE_URL}/api/WeatherForecasts/stream", StreamWeatherForecastsAsync(), cancellationToken).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
 
             Console.WriteLine("Weather forecasts has been send.");
             Console.WriteLine();
+        }
+
+        private static async Task StreamJsonStreamAsync(CancellationToken cancellationToken)
+        {
+            Console.WriteLine($"-- {nameof(StreamJsonStreamAsync)} --");
+            Console.WriteLine("Sending weather forecasts . . .");
+
+            using HttpClient httpClient = new();
+
+            JsonAsyncEnumerableContent<WeatherForecast> jsonAsyncEnumerableContent = new JsonAsyncEnumerableContent<WeatherForecast>(StreamWeatherForecastsAsync());
+            using HttpResponseMessage response = await httpClient.PostAsync($"{BASE_URL}/api/WeatherForecasts/stream", jsonAsyncEnumerableContent, cancellationToken);
+
+            response.EnsureSuccessStatusCode();
+
+            Console.WriteLine("Weather forecasts has been send.");
+            Console.WriteLine();
+        }
+
+        private static async IAsyncEnumerable<WeatherForecast> StreamWeatherForecastsAsync()
+        {
+            for (int daysFromToday = 1; daysFromToday <= 10; daysFromToday++)
+            {
+                WeatherForecast weatherForecast = await _weatherForecaster.GetWeatherForecastAsync(daysFromToday).ConfigureAwait(false);
+
+                yield return weatherForecast;
+            };
         }
     }
 }

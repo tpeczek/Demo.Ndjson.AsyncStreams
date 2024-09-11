@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
@@ -12,7 +13,8 @@ namespace Demo.Ndjson.AsyncStreams.AspNetCore.Mvc
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
-                .AddNdjson();
+                .AddNdjson()
+                .AddStreamedJson();
 
             services.AddSingleton<IWeatherForecaster, WeatherForecaster>();
         }
