@@ -8,6 +8,7 @@ Sample project for demonstrating how to use async streams and NDJSON to improve 
 - [Receiving JSON Objects Stream (NDJSON) in ASP.NET Core MVC](https://www.tpeczek.com/2021/05/receiving-json-objects-stream-ndjson-in.html)
 - [ASP.NET Core 6 and IAsyncEnumerable - Async Streamed JSON vs NDJSON](https://www.tpeczek.com/2021/07/aspnet-core-6-and-iasyncenumerable.html)
 - [ASP.NET Core 6 and IAsyncEnumerable - Receiving Async Streamed JSON in Blazor WebAssembly](https://www.tpeczek.com/2021/12/aspnet-core-6-and-iasyncenumerable.html)
+- [ASP.NET Core 9 and IAsyncEnumerable - Async Streaming JSON and NDJSON From Blazor WebAssembly](https://www.tpeczek.com/2024/09/aspnet-core-9-and-iasyncenumerable.html)
 
 ## Sponsor This Project
 
